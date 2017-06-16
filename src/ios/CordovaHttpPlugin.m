@@ -61,6 +61,14 @@
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
+- (void)invalidateSessionCancelingTasks:(CDVInvokedUrlCommand*)command {
+  bool enable = [[command.arguments objectAtIndex:0] boolValue];
+  if (enable) {
+    AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
+    [manager invalidateSessionCancelingTasks:YES];
+  }
+}
+
 - (void)acceptAllCerts:(CDVInvokedUrlCommand*)command {
     CDVPluginResult* pluginResult = nil;
     bool allow = [[command.arguments objectAtIndex:0] boolValue];
