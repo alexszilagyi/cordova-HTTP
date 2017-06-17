@@ -398,6 +398,26 @@ public class HttpRequest {
       CONNECTION_FACTORY = connectionFactory;
   }
   
+  public void invalidateSessionCancelingTasks(boolean cancelPendingTasks) throws IOException, InterruptedException {
+    if (connection == null) {
+      return;
+     }
+    
+    InputStream inputStream = connection.getInputStream();
+    
+    if (cancelPendingTasks) {
+      inputStream.close();
+      connection.disconnect();
+    } else {
+      BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+      while (rd.readLine() != null) {
+        // as long as we can read something, keep connection
+      }
+      
+      inputStream.close();
+      connection.disconnect();
+    }
+  }
   
   /**
   * Add a certificate to test against when using ssl pinning.
