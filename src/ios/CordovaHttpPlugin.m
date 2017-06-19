@@ -65,7 +65,7 @@
   bool enable = [[command.arguments objectAtIndex:0] boolValue];
   if (enable) {
     AFHTTPSessionManager *manager = [AFHTTPSessionManager manager];
-    [manager invalidateSessionCancelingTasks:YES];
+    [manager.operationQueue cancelAllOperations];
   }
 }
 
