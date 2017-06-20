@@ -400,7 +400,7 @@ public class HttpRequest {
 
   public void invalidateSessionCancelingTasks(boolean cancelPendingTasks) throws IOException, InterruptedException {
     if (connection == null) {
-      Log.i("HttpRequest", "NOTE: No connection to cancel!");
+      System.out.println("HttpRequest :: NOTE: No connection to cancel!");
       return;
      }
 
@@ -409,14 +409,14 @@ public class HttpRequest {
     if (cancelPendingTasks) {
       inputStream.close();
       connection.disconnect();
-      Log.i("HttpRequest", "NOTE: Canceled the request!");
+      System.out.println("HttpRequest :: NOTE: Canceled the request!");
     } else {
       BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
       while (rd.readLine() != null) {
         // as long as we can read something, keep connection
       }
 
-      Log.i("HttpRequest", "NOTE: There's an open connection which we'll close!");
+      System.out.println("HttpRequest :: NOTE: Canceled the request!");
       inputStream.close();
       connection.disconnect();
     }
