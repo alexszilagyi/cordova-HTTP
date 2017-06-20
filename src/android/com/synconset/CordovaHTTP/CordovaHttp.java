@@ -38,7 +38,7 @@ public abstract class CordovaHttp {
     private static AtomicBoolean sslPinning = new AtomicBoolean(false);
     private static AtomicBoolean acceptAllCerts = new AtomicBoolean(false);
 
-    private static List<HttpRequest> httpRequests = new CopyOnWriteArrayList<>();
+    private static List<HttpRequest> httpRequests = new CopyOnWriteArrayList<HttpRequest>();
 
     private String urlString;
     private Map<?, ?> params;
