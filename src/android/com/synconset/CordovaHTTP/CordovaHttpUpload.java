@@ -23,21 +23,25 @@ import android.webkit.MimeTypeMap;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
- 
+
 public class CordovaHttpUpload extends CordovaHttp implements Runnable {
     private String filePath;
     private String name;
-    
+
     public CordovaHttpUpload(String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext, String filePath, String name) {
         super(urlString, params, headers, callbackContext);
         this.filePath = filePath;
         this.name = name;
     }
-    
+
     @Override
     public void run() {
+      HttpRequest request = null;
+
         try {
-            HttpRequest request = HttpRequest.post(this.getUrlString());
+            request = HttpRequest.post(this.getUrlString());
+            CordovaHttp.addHttpRequest(request);
+            
             this.setupSecurity(request);
             request.acceptCharset(CHARSET);
             request.headers(this.getHeaders());
@@ -49,7 +53,7 @@ public class CordovaHttpUpload extends CordovaHttp implements Runnable {
             MimeTypeMap mimeTypeMap = MimeTypeMap.getSingleton();
             String mimeType = mimeTypeMap.getMimeTypeFromExtension(ext);
             request.part(this.name, filename, mimeType, new File(uri));
-            
+
             Set<?> set = (Set<?>)this.getParams().entrySet();
             Iterator<?> i = set.iterator();
             while (i.hasNext()) {
@@ -62,13 +66,15 @@ public class CordovaHttpUpload extends CordovaHttp implements Runnable {
                     request.part(key, (String)value);
                 } else {
                     this.respondWithError("All parameters must be Numbers or Strings");
+
+                    CordovaHttp.removeHttpRequest(request);
                     return;
                 }
             }
-            
+
             int code = request.code();
             String body = request.body(CHARSET);
-            
+
             JSONObject response = new JSONObject();
             response.put("status", code);
             if (code >= 200 && code < 300) {
@@ -91,5 +97,7 @@ public class CordovaHttpUpload extends CordovaHttp implements Runnable {
                 this.respondWithError("There was an error with the request");
             }
         }
+
+        CordovaHttp.removeHttpRequest(request);
     }
 }

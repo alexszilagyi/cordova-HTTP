@@ -407,18 +407,20 @@ public class HttpRequest {
     InputStream inputStream = connection.getInputStream();
 
     if (cancelPendingTasks) {
+      System.out.println("HttpRequest :: NOTE: Cancelling the request right now!");
       inputStream.close();
       connection.disconnect();
-      System.out.println("HttpRequest :: NOTE: Canceled the request!");
+      System.out.println("HttpRequest :: NOTE: Cancelled the request!");
     } else {
+      System.out.println("HttpRequest :: NOTE: Cancelling the request after task finishes!");
       BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
       while (rd.readLine() != null) {
-        // as long as we can read something, keep connection
+          System.out.println("HttpRequest :: NOTE: Reading input...");
       }
 
-      System.out.println("HttpRequest :: NOTE: Canceled the request!");
       inputStream.close();
       connection.disconnect();
+      System.out.println("HttpRequest :: NOTE: Cancelled the request!");
     }
   }
 

@@ -16,16 +16,20 @@ import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
- 
+
 public class CordovaHttpPost extends CordovaHttp implements Runnable {
     public CordovaHttpPost(String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext) {
         super(urlString, params, headers, callbackContext);
     }
-    
+
     @Override
     public void run() {
+      HttpRequest request = null;
+
         try {
-            HttpRequest request = HttpRequest.post(this.getUrlString());
+            request = HttpRequest.post(this.getUrlString());
+            CordovaHttp.addHttpRequest(request);
+            
             this.setupSecurity(request);
             request.acceptCharset(CHARSET);
             request.headers(this.getHeaders());
@@ -52,5 +56,7 @@ public class CordovaHttpPost extends CordovaHttp implements Runnable {
                 this.respondWithError("There was an error with the request");
             }
         }
+
+        CordovaHttp.removeHttpRequest(request);
     }
 }

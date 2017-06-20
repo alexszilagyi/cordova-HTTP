@@ -24,16 +24,20 @@ import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
- 
+
 public class CordovaHttpGet extends CordovaHttp implements Runnable {
     public CordovaHttpGet(String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext) {
         super(urlString, params, headers, callbackContext);
     }
-    
+
     @Override
     public void run() {
+      HttpRequest request = null;
+
         try {
-            HttpRequest request = HttpRequest.get(this.getUrlString(), this.getParams(), true);
+            request = HttpRequest.get(this.getUrlString(), this.getParams(), true);
+            CordovaHttp.addHttpRequest(request);
+
             this.setupSecurity(request);
             request.acceptCharset(CHARSET);
             request.headers(this.getHeaders());
@@ -59,5 +63,7 @@ public class CordovaHttpGet extends CordovaHttp implements Runnable {
                 this.respondWithError("There was an error with the request");
             }
         }
+
+        CordovaHttp.removeHttpRequest(request);
     }
 }
