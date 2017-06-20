@@ -60,16 +60,26 @@ public abstract class CordovaHttp {
     }
 
     public static void addHttpRequest(HttpRequest httpRequest){
+      if (httpRequest == null) {
+        return;
+      }
       httpRequests.add(httpRequest);
     }
 
     public static void removeHttpRequest(HttpRequest httpRequest){
+      if (httpRequest == null) {
+        return;
+      }
       httpRequests.remove(httpRequest);
     }
 
     public static void invalidateSessionCancelingTasks(boolean cancelPendingTasks){
-      for (HttpRequest httpRequest: httpRequests ) {
-        httpRequest.invalidateSessionCancelingTasks(cancelPendingTasks);
+      for (HttpRequest httpRequest: httpRequests) {
+        try {
+          httpRequest.invalidateSessionCancelingTasks(cancelPendingTasks);
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
 
       httpRequests.clear();
