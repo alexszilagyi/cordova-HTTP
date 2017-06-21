@@ -62,6 +62,9 @@ var PluginLoader = function (require, exports, module) {
                 success(entry);
             };
             return exec(win, failure, "CordovaHttpPlugin", "downloadFile", [url, params, headers, filePath]);
+        },
+        invalidateSessionCancelingTasks: function(cancelPendingTasks, success, failure) {
+            return exec(success, failure, "CordovaHttpPlugin", "invalidateSessionCancelingTasks", [cancelPendingTasks]);
         }
     };
 
