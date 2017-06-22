@@ -14,6 +14,7 @@ import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.util.Map;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -39,6 +40,7 @@ public abstract class CordovaHttp {
     private static AtomicBoolean acceptAllCerts = new AtomicBoolean(false);
 
     private static List<HttpRequest> httpRequests = new CopyOnWriteArrayList<HttpRequest>();
+    private static Map<HttpRequest, CallbackContext> contextMap = new ConcurrentHashMap<HttpRequest, CallbackContext>();
 
     private String urlString;
     private Map<?, ?> params;
@@ -59,11 +61,12 @@ public abstract class CordovaHttp {
         }
     }
 
-    public static void addHttpRequest(HttpRequest httpRequest){
-      if (httpRequest == null) {
+    public static void addHttpRequest(HttpRequest httpRequest, CallbackContext callbackContext){
+      if (httpRequest == null || callbackContext == null) {
         return;
       }
       httpRequests.add(httpRequest);
+      contextMap.put(httpRequest, callbackContext);
     }
 
     public static void removeHttpRequest(HttpRequest httpRequest){
@@ -71,15 +74,17 @@ public abstract class CordovaHttp {
         return;
       }
       httpRequests.remove(httpRequest);
+      contextMap.remove(httpRequest);
     }
 
     public static void invalidateSessionCancelingTasks(boolean cancelPendingTasks) {
         for (HttpRequest httpRequest : httpRequests) {
             System.out.println("invalidateSessionCancelingTasks reached!");
-            httpRequest.invalidateSessionCancelingTasks(cancelPendingTasks);
+            httpRequest.invalidateSessionCancelingTasks(contextMap.get(httpRequest), cancelPendingTasks);
         }
 
         httpRequests.clear();
+        contextMap.clear();
     }
 
     public static void acceptAllCerts(boolean accept) {
