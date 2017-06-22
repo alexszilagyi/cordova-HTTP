@@ -19,7 +19,9 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-package com.github.kevinsawicki.http;
+package com.synconset;
+
+import android.os.Handler;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
@@ -398,30 +400,41 @@ public class HttpRequest {
       CONNECTION_FACTORY = connectionFactory;
   }
 
-  public void invalidateSessionCancelingTasks(boolean cancelPendingTasks) throws IOException, InterruptedException {
+  public void invalidateSessionCancelingTasks(final boolean cancelPendingTasks) {
     if (connection == null) {
       System.out.println("HttpRequest :: NOTE: No connection to cancel!");
       return;
-     }
-
-    InputStream inputStream = connection.getInputStream();
-
-    if (cancelPendingTasks) {
-      System.out.println("HttpRequest :: NOTE: Cancelling the request right now!");
-      inputStream.close();
-      connection.disconnect();
-      System.out.println("HttpRequest :: NOTE: Cancelled the request!");
-    } else {
-      System.out.println("HttpRequest :: NOTE: Cancelling the request after task finishes!");
-      // BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
-      // while (rd.readLine() != null) {
-      //     System.out.println("HttpRequest :: NOTE: Reading input...");
-      // }
-
-      inputStream.close();
-      connection.disconnect();
-      System.out.println("HttpRequest :: NOTE: Cancelled the request!");
     }
+
+    new Handler().post(new Runnable() {
+      @Override
+      public void run() {
+        try {
+          InputStream inputStream = connection.getInputStream();
+
+          if (cancelPendingTasks) {
+            System.out.println("HttpRequest :: NOTE: Cancelling the request right now!");
+            inputStream.close();
+            connection.disconnect();
+            System.out.println("HttpRequest :: NOTE: Cancelled the request!");
+          } else {
+            System.out.println("HttpRequest :: NOTE: Cancelling the request after task finishes!");
+            // BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+            // while (rd.readLine() != null) {
+            //     System.out.println("HttpRequest :: NOTE: Reading input...");
+            // }
+
+            inputStream.close();
+            connection.disconnect();
+            System.out.println("HttpRequest :: NOTE: Cancelled the request!");
+          }
+        } catch (IOException e) {
+          System.out.println("invalidateSessionCancelingTasks exception!");
+          System.out.println(e);
+          e.printStackTrace();
+        }
+      }
+    });
   }
 
   /**

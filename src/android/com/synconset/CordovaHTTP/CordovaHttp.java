@@ -73,19 +73,13 @@ public abstract class CordovaHttp {
       httpRequests.remove(httpRequest);
     }
 
-    public static void invalidateSessionCancelingTasks(boolean cancelPendingTasks){
-      for (HttpRequest httpRequest: httpRequests) {
-        try {
-          System.out.println("invalidateSessionCancelingTasks reached!");
-          httpRequest.invalidateSessionCancelingTasks(cancelPendingTasks);
-        } catch (Exception e) {
-          System.out.println("invalidateSessionCancelingTasks exception!");
-          System.out.println(e);
-          e.printStackTrace();
+    public static void invalidateSessionCancelingTasks(boolean cancelPendingTasks) {
+        for (HttpRequest httpRequest : httpRequests) {
+            System.out.println("invalidateSessionCancelingTasks reached!");
+            httpRequest.invalidateSessionCancelingTasks(cancelPendingTasks);
         }
-      }
 
-      httpRequests.clear();
+        httpRequests.clear();
     }
 
     public static void acceptAllCerts(boolean accept) {
