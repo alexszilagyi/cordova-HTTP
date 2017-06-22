@@ -78,7 +78,8 @@ public abstract class CordovaHttp {
         try {
           httpRequest.invalidateSessionCancelingTasks(cancelPendingTasks);
         } catch (Exception e) {
-          e.printStackTrace();
+         System.out.println("e");
+         e.printStackTrace();
         }
       }
 
