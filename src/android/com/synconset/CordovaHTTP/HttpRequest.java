@@ -19,8 +19,7 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
  * IN THE SOFTWARE.
  */
-package com.synconset;
-
+package com.github.kevinsawicki.http;
 import android.os.Handler;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
