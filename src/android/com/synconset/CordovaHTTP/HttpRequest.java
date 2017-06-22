@@ -20,7 +20,12 @@
  * IN THE SOFTWARE.
  */
 package com.github.kevinsawicki.http;
+import android.os.AsyncTask;
 import android.os.Handler;
+
+import org.apache.cordova.CallbackContext;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_CREATED;
@@ -268,6 +273,8 @@ public class HttpRequest {
 
   private static HostnameVerifier TRUSTED_VERIFIER;
 
+  protected static final Integer OFFLINE_STATUS_CODE = -1;
+
   private static String getValidCharset(final String charset) {
     if (charset != null && charset.length() > 0)
       return charset;
@@ -399,41 +406,55 @@ public class HttpRequest {
       CONNECTION_FACTORY = connectionFactory;
   }
 
-  public void invalidateSessionCancelingTasks(final boolean cancelPendingTasks) {
+  public void invalidateSessionCancelingTasks(CallbackContext callbackContext, final boolean cancelPendingTasks) {
     if (connection == null) {
       System.out.println("HttpRequest :: NOTE: No connection to cancel!");
       return;
     }
 
-    new Handler().post(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          InputStream inputStream = connection.getInputStream();
+    InvalidateConnectionTask invalidateConnectionTask = new InvalidateConnectionTask();
+    invalidateConnectionTask.callbackContext = callbackContext;
+    invalidateConnectionTask.execute(cancelPendingTasks);
+  }
 
-          if (cancelPendingTasks) {
-            System.out.println("HttpRequest :: NOTE: Cancelling the request right now!");
-            inputStream.close();
-            connection.disconnect();
-            System.out.println("HttpRequest :: NOTE: Cancelled the request!");
-          } else {
-            System.out.println("HttpRequest :: NOTE: Cancelling the request after task finishes!");
-            // BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
-            // while (rd.readLine() != null) {
-            //     System.out.println("HttpRequest :: NOTE: Reading input...");
-            // }
+  private class InvalidateConnectionTask extends AsyncTask<Boolean, Void, String> {
 
-            inputStream.close();
-            connection.disconnect();
-            System.out.println("HttpRequest :: NOTE: Cancelled the request!");
-          }
-        } catch (IOException e) {
-          System.out.println("invalidateSessionCancelingTasks exception!");
-          System.out.println(e);
-          e.printStackTrace();
+    public CallbackContext callbackContext;
+
+    @Override
+    protected String doInBackground(Boolean... params) {
+      try {
+        if (params[0]) {
+          System.out.println("HttpRequest :: NOTE: Cancelling the request right now!");
+          connection.disconnect();
+          System.out.println("HttpRequest :: NOTE: Cancelled the request!");
+        } else {
+          System.out.println("HttpRequest :: NOTE: Cancelling the request after task finishes!");
+           BufferedReader rd = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+           while (rd.readLine() != null) {
+               System.out.println("HttpRequest :: NOTE: Reading input...");
+           }
+
+          connection.disconnect();
+          System.out.println("HttpRequest :: NOTE: Cancelled the request!");
         }
+      } catch (Exception e) {
+        System.out.println("invalidateSessionCancelingTasks exception!");
+        System.out.println(e);
+        e.printStackTrace();
       }
-    });
+
+      try {
+        JSONObject response = new JSONObject();
+        response.put("status", OFFLINE_STATUS_CODE);
+        callbackContext.error(response);
+      } catch (JSONException e){
+        System.out.println("invalidateSessionCancelingTasks exception on getting status!");
+        e.printStackTrace();
+      }
+
+      return "Executed";
+    }
   }
 
   /**
