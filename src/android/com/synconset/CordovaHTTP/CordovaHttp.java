@@ -76,10 +76,12 @@ public abstract class CordovaHttp {
     public static void invalidateSessionCancelingTasks(boolean cancelPendingTasks){
       for (HttpRequest httpRequest: httpRequests) {
         try {
+          System.out.println("invalidateSessionCancelingTasks reached!");
           httpRequest.invalidateSessionCancelingTasks(cancelPendingTasks);
         } catch (Exception e) {
-         System.out.println("e");
-         e.printStackTrace();
+          System.out.println("invalidateSessionCancelingTasks exception!");
+          System.out.println(e);
+          e.printStackTrace();
         }
       }
 
