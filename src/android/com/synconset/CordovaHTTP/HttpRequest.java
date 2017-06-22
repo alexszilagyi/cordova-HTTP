@@ -413,10 +413,10 @@ public class HttpRequest {
       System.out.println("HttpRequest :: NOTE: Cancelled the request!");
     } else {
       System.out.println("HttpRequest :: NOTE: Cancelling the request after task finishes!");
-      BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
-      while (rd.readLine() != null) {
-          System.out.println("HttpRequest :: NOTE: Reading input...");
-      }
+      // BufferedReader rd = new BufferedReader(new InputStreamReader(inputStream));
+      // while (rd.readLine() != null) {
+      //     System.out.println("HttpRequest :: NOTE: Reading input...");
+      // }
 
       inputStream.close();
       connection.disconnect();
