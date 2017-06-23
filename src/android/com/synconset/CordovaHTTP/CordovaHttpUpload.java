@@ -40,7 +40,7 @@ public class CordovaHttpUpload extends CordovaHttp implements Runnable {
         JSONObject response = new JSONObject();
         try {
 
-            if (!NetworkStatus.isOnline(this.cordova.getActivity().getApplicationContext())) {
+            if (!NetworkStatus.isOnline(super.cordova.getActivity().getApplicationContext())) {
                 response.put("status", ONLINE_PENDING_STATUS_CODE);
                 this.getCallbackContext().error(response);
                 return;
