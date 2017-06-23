@@ -26,7 +26,14 @@ public class CordovaHttpPostJson extends CordovaHttp implements Runnable {
     @Override
     public void run() {
         HttpRequest request = null;
+        JSONObject response = new JSONObject();
         try {
+            if (!NetworkStatus.isOnline(this.cordova.getActivity().getApplicationContext())) {
+                response.put("status", ONLINE_PENDING_STATUS_CODE);
+                this.getCallbackContext().error(response);
+                return;
+            }
+
             request = HttpRequest.post(this.getUrlString());
             CordovaHttp.addHttpRequest(request, this.getCallbackContext());
 
@@ -37,7 +44,6 @@ public class CordovaHttpPostJson extends CordovaHttp implements Runnable {
             request.send(getJsonObject().toString());
             int code = request.code();
             String body = request.body(CHARSET);
-            JSONObject response = new JSONObject();
             response.put("status", code);
             if (code >= 200 && code < 300) {
                 response.put("data", body);

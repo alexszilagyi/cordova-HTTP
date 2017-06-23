@@ -33,8 +33,14 @@ public class CordovaHttpGet extends CordovaHttp implements Runnable {
     @Override
     public void run() {
       HttpRequest request = null;
-
+        JSONObject response = new JSONObject();
         try {
+            if (!NetworkStatus.isOnline(this.cordova.getActivity().getApplicationContext())) {
+                response.put("status", ONLINE_PENDING_STATUS_CODE);
+                this.getCallbackContext().error(response);
+                return;
+            }
+
             request = HttpRequest.get(this.getUrlString(), this.getParams(), true);
             CordovaHttp.addHttpRequest(request, this.getCallbackContext());
 
@@ -43,7 +49,6 @@ public class CordovaHttpGet extends CordovaHttp implements Runnable {
             request.headers(this.getHeaders());
             int code = request.code();
             String body = request.body(CHARSET);
-            JSONObject response = new JSONObject();
             response.put("status", code);
             if (code >= 200 && code < 300) {
                 response.put("data", body);

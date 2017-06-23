@@ -28,6 +28,9 @@ import javax.net.ssl.HostnameVerifier;
 
 import java.util.Iterator;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
@@ -35,6 +38,7 @@ import com.github.kevinsawicki.http.HttpRequest;
 public abstract class CordovaHttp {
     protected static final String TAG = "CordovaHTTP";
     protected static final String CHARSET = "UTF-8";
+    protected static final Integer ONLINE_PENDING_STATUS_CODE = -2;
 
     private static AtomicBoolean sslPinning = new AtomicBoolean(false);
     private static AtomicBoolean acceptAllCerts = new AtomicBoolean(false);
