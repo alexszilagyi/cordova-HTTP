@@ -3,8 +3,7 @@
  */
 package com.synconset;
 
-import org.apache.cordova.CallbackContext;
-
+import org.apache.cordova.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -35,7 +34,7 @@ import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 
-public abstract class CordovaHttp {
+public abstract class CordovaHttp extends CordovaPlugin {
     protected static final String TAG = "CordovaHTTP";
     protected static final String CHARSET = "UTF-8";
     protected static final Integer ONLINE_PENDING_STATUS_CODE = -2;
