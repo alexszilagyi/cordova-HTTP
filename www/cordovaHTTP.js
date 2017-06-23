@@ -24,6 +24,9 @@ var PluginLoader = function (require, exports, module) {
         post: function(url, params, headers, success, failure) {
             return exec(success, failure, "CordovaHttpPlugin", "post", [url, params, headers]);
         },
+        postJson: function(url, jsonObj, headers, success, failure) {
+            return exec(success, failure, "CordovaHttpPlugin", "postJson", [url, jsonObj, headers]);
+        },
         get: function(url, params, headers, success, failure) {
             return exec(success, failure, "CordovaHttpPlugin", "get", [url, params, headers]);
         },
