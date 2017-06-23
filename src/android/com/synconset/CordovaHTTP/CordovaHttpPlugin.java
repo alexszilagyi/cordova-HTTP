@@ -31,6 +31,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.util.Base64;
 import android.util.Log;
@@ -50,13 +51,15 @@ public class CordovaHttpPlugin extends CordovaPlugin {
 
     @Override
     public boolean execute(String action, final JSONArray args, final CallbackContext callbackContext) throws JSONException {
+        Context context = cordova.getActivity().getApplicationContext();
+
         if (action.equals("get")) {
             String urlString = args.getString(0);
             JSONObject params = args.getJSONObject(1);
             JSONObject headers = args.getJSONObject(2);
             HashMap<?, ?> paramsMap = this.getMapFromJSONObject(params);
             HashMap<String, String> headersMap = this.addToMap(this.globalHeaders, headers);
-            CordovaHttpGet get = new CordovaHttpGet(urlString, paramsMap, headersMap, callbackContext);
+            CordovaHttpGet get = new CordovaHttpGet(context, urlString, paramsMap, headersMap, callbackContext);
             cordova.getThreadPool().execute(get);
         } else if (action.equals("post")) {
             String urlString = args.getString(0);
@@ -64,14 +67,14 @@ public class CordovaHttpPlugin extends CordovaPlugin {
             JSONObject headers = args.getJSONObject(2);
             HashMap<?, ?> paramsMap = this.getMapFromJSONObject(params);
             HashMap<String, String> headersMap = this.addToMap(this.globalHeaders, headers);
-            CordovaHttpPost post = new CordovaHttpPost(urlString, paramsMap, headersMap, callbackContext);
+            CordovaHttpPost post = new CordovaHttpPost(context, urlString, paramsMap, headersMap, callbackContext);
             cordova.getThreadPool().execute(post);
         } else if (action.equals("postJson")) {
             String urlString = args.getString(0);
             JSONObject jsonObj = args.getJSONObject(1);
             JSONObject headers = args.getJSONObject(2);
             HashMap<String, String> headersMap = this.addToMap(this.globalHeaders, headers);
-            CordovaHttpPostJson postJson = new CordovaHttpPostJson(urlString, jsonObj, headersMap, callbackContext);
+            CordovaHttpPostJson postJson = new CordovaHttpPostJson(context, urlString, jsonObj, headersMap, callbackContext);
             cordova.getThreadPool().execute(postJson);
         } else if (action.equals("useBasicAuth")) {
             String username = args.getString(0);
@@ -103,7 +106,7 @@ public class CordovaHttpPlugin extends CordovaPlugin {
             HashMap<String, String> headersMap = this.addToMap(this.globalHeaders, headers);
             String filePath = args.getString(3);
             String name = args.getString(4);
-            CordovaHttpUpload upload = new CordovaHttpUpload(urlString, paramsMap, headersMap, callbackContext, filePath, name);
+            CordovaHttpUpload upload = new CordovaHttpUpload(context, urlString, paramsMap, headersMap, callbackContext, filePath, name);
             cordova.getThreadPool().execute(upload);
         } else if (action.equals("downloadFile")) {
             String urlString = args.getString(0);
@@ -112,7 +115,7 @@ public class CordovaHttpPlugin extends CordovaPlugin {
             HashMap<?, ?> paramsMap = this.getMapFromJSONObject(params);
             HashMap<String, String> headersMap = this.addToMap(this.globalHeaders, headers);
             String filePath = args.getString(3);
-            CordovaHttpDownload download = new CordovaHttpDownload(urlString, paramsMap, headersMap, callbackContext, filePath);
+            CordovaHttpDownload download = new CordovaHttpDownload(context, urlString, paramsMap, headersMap, callbackContext, filePath);
             cordova.getThreadPool().execute(download);
         } else if (action.equals("invalidateSessionCancelingTasks")) {
             try {

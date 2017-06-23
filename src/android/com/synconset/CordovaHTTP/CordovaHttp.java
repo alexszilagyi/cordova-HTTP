@@ -45,20 +45,23 @@ public abstract class CordovaHttp extends CordovaPlugin {
     private static List<HttpRequest> httpRequests = new CopyOnWriteArrayList<HttpRequest>();
     private static Map<HttpRequest, CallbackContext> contextMap = new ConcurrentHashMap<HttpRequest, CallbackContext>();
 
+    protected Context context;
     private String urlString;
     private Map<?, ?> params;
     private JSONObject jsonObject;
     private Map<String, String> headers;
     private CallbackContext callbackContext;
 
-    public CordovaHttp(String urlString, JSONObject jsonObj, Map<String, String> headers, CallbackContext callbackContext) {
+    public CordovaHttp(Context context, String urlString, JSONObject jsonObj, Map<String, String> headers, CallbackContext callbackContext) {
+        this.context = context;
         this.urlString = urlString;
         this.jsonObject = jsonObj;
         this.headers = headers;
         this.callbackContext = callbackContext;
     }
 
-    public CordovaHttp(String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext) {
+    public CordovaHttp(Context context, String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext) {
+        this.context = context;
         this.urlString = urlString;
         this.params = params;
         this.headers = headers;

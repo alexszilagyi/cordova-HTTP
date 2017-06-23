@@ -12,14 +12,16 @@ import org.json.JSONObject;
 
 import javax.net.ssl.SSLHandshakeException;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
 
 public class CordovaHttpPost extends CordovaHttp implements Runnable {
-    public CordovaHttpPost(String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext) {
-        super(urlString, params, headers, callbackContext);
+
+    public CordovaHttpPost(Context context, String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext) {
+        super(context, urlString, params, headers, callbackContext);
     }
 
     @Override
@@ -27,7 +29,7 @@ public class CordovaHttpPost extends CordovaHttp implements Runnable {
       HttpRequest request = null;
         JSONObject response = new JSONObject();
         try {
-            if (!NetworkStatus.isOnline(super.cordova.getActivity().getApplicationContext())) {
+            if (!NetworkStatus.isOnline(super.context)) {
                 response.put("status", ONLINE_PENDING_STATUS_CODE);
                 this.getCallbackContext().error(response);
                 return;

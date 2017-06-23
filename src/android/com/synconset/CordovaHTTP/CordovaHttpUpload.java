@@ -18,6 +18,7 @@ import org.json.JSONObject;
 
 import javax.net.ssl.SSLHandshakeException;
 
+import android.content.Context;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -28,8 +29,8 @@ public class CordovaHttpUpload extends CordovaHttp implements Runnable {
     private String filePath;
     private String name;
 
-    public CordovaHttpUpload(String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext, String filePath, String name) {
-        super(urlString, params, headers, callbackContext);
+    public CordovaHttpUpload(Context context, String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext, String filePath, String name) {
+        super(context, urlString, params, headers, callbackContext);
         this.filePath = filePath;
         this.name = name;
     }
@@ -40,7 +41,7 @@ public class CordovaHttpUpload extends CordovaHttp implements Runnable {
         JSONObject response = new JSONObject();
         try {
 
-            if (!NetworkStatus.isOnline(super.cordova.getActivity().getApplicationContext())) {
+            if (!NetworkStatus.isOnline(super.context)) {
                 response.put("status", ONLINE_PENDING_STATUS_CODE);
                 this.getCallbackContext().error(response);
                 return;

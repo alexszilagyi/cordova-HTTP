@@ -3,6 +3,7 @@
  */
 package com.synconset;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
@@ -23,10 +24,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class CordovaHttpDownload extends CordovaHttp implements Runnable {
+
     private String filePath;
 
-    public CordovaHttpDownload(String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext, String filePath) {
-        super(urlString, params, headers, callbackContext);
+    public CordovaHttpDownload(Context context, String urlString, Map<?, ?> params, Map<String, String> headers, CallbackContext callbackContext, String filePath) {
+        super(context, urlString, params, headers, callbackContext);
         this.filePath = filePath;
     }
 
@@ -37,7 +39,7 @@ public class CordovaHttpDownload extends CordovaHttp implements Runnable {
 
         try {
 
-            if (!NetworkStatus.isOnline(super.cordova.getActivity().getApplicationContext())) {
+            if (!NetworkStatus.isOnline(super.context)) {
                 response.put("status", ONLINE_PENDING_STATUS_CODE);
                 this.getCallbackContext().error(response);
                 return;
