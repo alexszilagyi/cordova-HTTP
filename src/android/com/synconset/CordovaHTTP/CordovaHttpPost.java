@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import javax.net.ssl.SSLHandshakeException;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
@@ -29,7 +28,7 @@ public class CordovaHttpPost extends CordovaHttp implements Runnable {
       HttpRequest request = null;
         JSONObject response = new JSONObject();
         try {
-            if (!NetworkStatus.isOnline(super.context)) {
+            if (!Network.isOnline(super.context)) {
                 response.put("status", ONLINE_PENDING_STATUS_CODE);
                 this.getCallbackContext().error(response);
                 return;

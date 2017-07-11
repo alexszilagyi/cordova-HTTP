@@ -21,20 +21,12 @@
  */
 package com.github.kevinsawicki.http;
 import android.os.AsyncTask;
-import android.os.Handler;
+
+import com.synconset.Network;
 
 import org.apache.cordova.CallbackContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
-import static java.net.HttpURLConnection.HTTP_CREATED;
-import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
-import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
-import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
-import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
-import static java.net.HttpURLConnection.HTTP_OK;
-import static java.net.Proxy.Type.HTTP;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -78,6 +70,7 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -96,6 +89,15 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
+
+import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
+import static java.net.HttpURLConnection.HTTP_CREATED;
+import static java.net.HttpURLConnection.HTTP_INTERNAL_ERROR;
+import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
+import static java.net.HttpURLConnection.HTTP_NOT_MODIFIED;
+import static java.net.HttpURLConnection.HTTP_NO_CONTENT;
+import static java.net.HttpURLConnection.HTTP_OK;
+import static java.net.Proxy.Type.HTTP;
 
 /**
  * A fluid interface for making HTTP requests using an underlying
@@ -1096,7 +1098,15 @@ public class HttpRequest {
    */
   public static HttpRequest get(final CharSequence baseUrl,
       final Map<?, ?> params, final boolean encode) {
-    String url = append(baseUrl, params);
+
+    String url = null;
+
+    try {
+      url = Network.addQueryStringToUrlString(baseUrl.toString(), params);
+    } catch (IOException ie) {
+      ie.printStackTrace();
+    }
+
     return get(encode ? encode(url) : url);
   }
 

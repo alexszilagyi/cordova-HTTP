@@ -4,7 +4,6 @@
 package com.synconset;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
@@ -39,7 +38,7 @@ public class CordovaHttpDownload extends CordovaHttp implements Runnable {
 
         try {
 
-            if (!NetworkStatus.isOnline(super.context)) {
+            if (!Network.isOnline(super.context)) {
                 response.put("status", ONLINE_PENDING_STATUS_CODE);
                 this.getCallbackContext().error(response);
                 return;

@@ -3,16 +3,8 @@
  */
 package com.synconset;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.HostnameVerifier;
 
 import javax.net.ssl.SSLHandshakeException;
 
@@ -21,7 +13,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.github.kevinsawicki.http.HttpRequest;
 import com.github.kevinsawicki.http.HttpRequest.HttpRequestException;
@@ -37,14 +28,11 @@ public class CordovaHttpGet extends CordovaHttp implements Runnable {
       HttpRequest request = null;
         JSONObject response = new JSONObject();
         try {
-            if (!NetworkStatus.isOnline(super.context)) {
+            if (!Network.isOnline(super.context)) {
                 response.put("status", ONLINE_PENDING_STATUS_CODE);
                 this.getCallbackContext().error(response);
                 return;
             }
-
-            System.out.println("HttpRequest-GET :: PARAMS:");
-            System.out.println(this.getParams());
 
             request = HttpRequest.get(this.getUrlString(), this.getParams(), true);
             CordovaHttp.addHttpRequest(request, this.getCallbackContext());
