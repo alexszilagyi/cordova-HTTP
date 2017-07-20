@@ -34,7 +34,7 @@ public class CordovaHttpGet extends CordovaHttp implements Runnable {
                 return;
             }
 
-            request = HttpRequest.get(this.getUrlString(), this.getParams(), true);
+            request = HttpRequest.get(this.getUrlString(), this.getParams(), false);
             CordovaHttp.addHttpRequest(request, this.getCallbackContext());
 
             this.setupSecurity(request);
